@@ -37,3 +37,4 @@ python -m morabeza.resumo data/vendas_amostra.csv
 ## Sobre mim
 Formando: André Sanches
 Ilha favorita: São Vicente
+
