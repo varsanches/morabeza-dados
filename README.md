@@ -34,4 +34,6 @@ bash obter_sessao.sh 2      # troca 2 pelo número da sessão
 python -m morabeza.resumo data/vendas_amostra.csv
 ```
 
+## Sobre mim
 Formando: André Sanches
+Ilha favorita: São Vicente
