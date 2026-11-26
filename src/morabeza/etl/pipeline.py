@@ -77,7 +77,8 @@ def correr(pasta: str, caminho_bd: str) -> dict:
 def esquecer_ficheiro(nome: str, conn: sqlite3.Connection) -> None:
     """Retira um ficheiro de ficheiros_processados, para voltar a ser processado na próxima execução."""
     # EXTENSÃO: dentro de with conn:, DELETE FROM ficheiros_processados WHERE nome = ?
-    raise NotImplementedError("Extensão por fazer")
+    with conn:
+        conn.execute("DELETE FROM ficheiros_processados WHERE nome = ?", (nome,))
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -85,7 +86,13 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Pipeline de vendas mensais da Morabeza")
     parser.add_argument("pasta")
     parser.add_argument("base_dados")
+    parser.add_argument("--reprocessar", metavar="NOME", help="volta a processar este ficheiro")
     args = parser.parse_args(argv)
+    if args.reprocessar:
+        with sqlite3.connect(args.base_dados) as conn:
+            criar_tabelas(conn)
+            esquecer_ficheiro(args.reprocessar, conn)
+        conn.close()
     relatorio = correr(args.pasta, args.base_dados)
     print(f"Processados: {len(relatorio['processados'])}  Falhados: {len(relatorio['falhados'])}  "
           f"Vendas na base: {relatorio['linhas']}")
